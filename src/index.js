@@ -1,23 +1,30 @@
 class SearchableSelect extends HTMLElement {
     constructor() {
-        super();
-        this.selectedMode = false;
+        super()
+        this.selectedMode = false
         this.$search = this.querySelector('input') ?? document.createElement('INPUT')
         this.$results = document.createElement('DIV')
         this.$results.classList.add('results')
-        this.$results.hidden = true;
+        this.$results.hidden = true
         this.$select = this.querySelector('select')
-        this.hoverPosition = 0;
-        this.$options = this.$select.children
-        this.$selectedResult = undefined;
+        this.$selectedResult = undefined
         this.render()
     }
 
     render() {
-        this.setupSearch();
+        this.setupSearch()
         this.setDefault()
-        this.renderResults();
+        this.renderResults()
         this.setEvents()
+        this.observeOptions()
+    }
+
+    observeOptions() {
+        const observer = new MutationObserver(() => {
+            this.renderResults()
+        })
+
+        observer.observe(this.$select, { childList: true })
     }
 
     toggleResults() {
@@ -27,7 +34,7 @@ class SearchableSelect extends HTMLElement {
     setupSearch() {
         const $container = document.createElement('searchable-select-container')
         $container.classList.add('container')
-        $container.prepend(this.$search, this.$results);
+        $container.prepend(this.$search, this.$results)
         this.prepend($container)
     }
 
@@ -52,28 +59,28 @@ class SearchableSelect extends HTMLElement {
     handleKeyoard(event) {
         const $hovering = this.$results.querySelector('[data-hover]')
 
-        if (!$hovering) return;
+        if (!$hovering) return
 
         if (event.key === 'ArrowDown') {
             event.preventDefault()
             const $next = $hovering.nextElementSibling
-            if (!$next) return;
-            this.updateHover($next);
+            if (!$next) return
+            this.updateHover($next)
             $hovering.scrollIntoView()
-            return;
+            return
         }
         if (event.key === 'ArrowUp') {
             event.preventDefault()
-            const $prev = $hovering.previousElementSibling;
-            if (!$prev) return;
-            this.updateHover($prev);
+            const $prev = $hovering.previousElementSibling
+            if (!$prev) return
+            this.updateHover($prev)
             $prev.scrollIntoView()
-            return;
+            return
         }
         if (event.key === 'Enter') {
             event.preventDefault()
             $hovering.click()
-            return;
+            return
         }
     }
 
@@ -121,7 +128,7 @@ class SearchableSelect extends HTMLElement {
     }
 
     renderResults(search = '') {
-        const $new_results = this.getResults(search);
+        const $new_results = this.getResults(search)
 
         this.$results.replaceChildren(...$new_results)
 
@@ -155,7 +162,7 @@ class SearchableSelect extends HTMLElement {
             const content = o.textContent.trim()
             const status = o.hasAttribute('selected')
 
-            if (!content) continue;
+            if (!content) continue
 
             const $result = this.createResult({
                 value: o.value, status, content
@@ -181,8 +188,7 @@ class SearchableSelect extends HTMLElement {
         $result.dataset.value = value
         if (status) {
             $result.setAttribute('data-selected', '')
-            // this.updateHover($result)
-            this.$selectedResult = $result;
+            this.$selectedResult = $result
         }
         $result.textContent = content
         return $result
@@ -190,4 +196,4 @@ class SearchableSelect extends HTMLElement {
 
 }
 
-window.customElements.define('searchable-select', SearchableSelect);
+window.customElements.define('searchable-select', SearchableSelect)
