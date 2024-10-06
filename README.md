@@ -8,6 +8,23 @@ A custom web component that transforms a standard `<select>` element into a sear
 - **Customizable Design:** Style the component using the provided CSS classes or your own.
 - **Lightweight and Easy to Integrate:** Just include the web component in your HTML and wrap it around a `<select>` element.
 
+## CSS and Component Import
+
+To use the component, ensure you include the CSS from the `dist` folder, as the package only includes the Web Component JavaScript when imported into your project. 
+
+```html
+<link rel="stylesheet" href="path/to/dist/style.min.css">
+<script type="module" src="path/to/index.min.js"></script>
+```
+
+Alternatively, you can import the package directly in your JavaScript/TypeScript files:
+
+```javascript
+import '@salvadorsru/searchable-select';
+```
+
+> **Note:** Importing the package via JavaScript **does not include the CSS**. You will need to manually include the CSS from the `dist` folder in your project.
+
 ## Use example
 
 ```html
