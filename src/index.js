@@ -41,7 +41,6 @@ class SearchableSelect extends HTMLElement {
 
     updateHover($element) {
         const $prev = this.$results.querySelector('[data-hover]')
-        console.log($prev)
         if ($prev) {
             $prev.removeAttribute('data-hover')
         }
@@ -133,7 +132,6 @@ class SearchableSelect extends HTMLElement {
         this.$results.replaceChildren(...$new_results)
 
         const $to_hover = this.$results.querySelector('[data-selected]') ?? $new_results[0]
-        console.log(this.$results.querySelector('[data-selected]'))
         this.updateHover($to_hover)
 
     }
