@@ -167,7 +167,7 @@ class SearchableSelect extends HTMLElement {
             })
 
             if (to_search) {
-                if (content.toLocaleLowerCase().includes(to_search.toLocaleLowerCase())) {
+                if (content.toLocaleLowerCase().trim().includes(to_search.toLocaleLowerCase().trim())) {
                     results.push($result)
                 }
             } else {
