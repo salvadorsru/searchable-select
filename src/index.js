@@ -21,6 +21,7 @@ class SearchableSelect extends HTMLElement {
 
     observeOptions() {
         const observer = new MutationObserver(() => {
+            this.setDefault()
             this.renderResults()
         })
 
