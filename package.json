@@ -1,6 +1,6 @@
 {
-  "name": "searchable-select",
-  "version": "1.0.0",
+  "name": "@salvadorsru/searchable-select",
+  "version": "1.0.6",
   "description": "A custom web component that transforms a standard <select> element into a searchable dropdown. It allows users to filter and search through options in real-time for improved usability. Easily custo…",
   "main": "dist/index.min.js",
   "style": "dist/style.min.css",
@@ -28,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/salvadorsru/searchable-select/issues"
   },
-  "homepage": "https://github.com/salvadorsru/searchable-select#readme"
+  "homepage": "https://github.com/salvadorsru/searchable-select#readme",
+  "dependencies": {
+    "@salvadorsru/searchable-select": "^1.0.6"
+  }
 }
