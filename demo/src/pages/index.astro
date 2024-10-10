@@ -1,5 +1,8 @@
 ---
+import Anchor from "../components/anchor.astro";
 import Form from "../components/form.astro";
+import GitHub from "../components/icons/GitHub.astro";
+import NPM from "../components/icons/NPM.astro";
 ---
 
 <html lang="en">
@@ -12,12 +15,47 @@ import Form from "../components/form.astro";
 	</head>
 	<body>
 		<main>
-			<h1>Searchable Select Preview</h1>
-			<Form />
+			<div>
+				<h1>Searchable Select Preview</h1>
+
+				<Form />
+			</div>
+			<div class="anchors">
+				<Anchor href="https://github.com/salvadorsru/searchable-select">
+					<span slot="icon">
+						<GitHub />
+					</span>
+					Go to GitHub
+				</Anchor>
+
+				<Anchor
+					href="https://www.npmjs.com/package/@salvadorsru/searchable-select"
+				>
+					<span slot="icon">
+						<NPM />
+					</span>
+					Go to NPM
+				</Anchor>
+			</div>
 		</main>
 	</body>
 
+	<style is:global>
+		a {
+			color: white;
+		}
+	</style>
+
 	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			background-color: #121212;
+			color: white;
+		}
+
 		:root {
 			font-family:
 				system-ui,
@@ -44,6 +82,15 @@ import Form from "../components/form.astro";
 		h1 {
 			font-size: 20px;
 			text-align: center;
+			margin-bottom: 3rem;
+		}
+
+		.anchors {
+			display: flex;
+			gap: 2.5rem;
+			margin-bottom: 1rem;
+			align-items: center;
+			margin-block: 2rem;
 		}
 	</style>
 </html>

@@ -1,0 +1,57 @@
+---
+const { href } = Astro.props;
+---
+
+<a class="anchor-with-icon" href={href} target="_blank">
+    <span>
+        <div class="icon">
+            <slot name="icon" />
+        </div>
+        <slot />
+    </span>
+</a>
+
+<style>
+    a {
+        text-decoration: none;
+        overflow: hidden;
+    }
+
+    .icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 24px;
+    }
+
+    a span {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        line-height: 1;
+        gap: 15px;
+        padding: 5px 0;
+        font-weight: bold;
+        color: currentColor;
+        background-color:;
+        border-radius: 5px;
+    }
+
+    a::after {
+        content: "";
+        display: flex;
+        height: 2px;
+        border-radius: 2px;
+        background-color: currentColor;
+        transform: translateX(-100%);
+        transition: transform 0.5s;
+    }
+
+    a:hover::after {
+        transform: translateX(0);
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+</style>
