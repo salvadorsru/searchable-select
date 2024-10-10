@@ -45,7 +45,7 @@ class SearchableSelect extends HTMLElement {
         if ($prev) {
             $prev.removeAttribute('data-hover')
         }
-        $element.setAttribute('data-hover', '')
+        if ($element) $element.setAttribute('data-hover', '')
     }
 
     updateSelected(value) {
