@@ -1,6 +1,6 @@
 {
   "name": "@salvadorsru/searchable-select",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A custom web component that transforms a standard <select> element into a searchable dropdown. It allows users to filter and search through options in real-time for improved usability. Easily custo…",
   "main": "dist/index.min.js",
   "style": "dist/style.min.css",
