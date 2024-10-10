@@ -1,0 +1,23 @@
+<searchable-select>
+    <input
+        type="text"
+        aria-label="Search countries"
+        placeholder="Where are you from?"
+    />
+    <select name="countries" id="countries" required>
+        <option value="argentina">Argentina</option>
+        <option value="brazil">Brazil</option>
+        <option value="canada">Canada</option>
+        <option value="france">France</option>
+        <option value="germany">Germany</option>
+        <option value="japan">Japan</option>
+    </select>
+</searchable-select>
+
+<script>
+    import "@salvadorsru/searchable-select";
+</script>
+
+<style is:global>
+    @import url("/node_modules/@salvadorsru/searchable-select/dist/style.min.css");
+</style>

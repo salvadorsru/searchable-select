@@ -1,0 +1,63 @@
+---
+import Select from "./select.astro";
+---
+
+<form id="select-form-test">
+    <Select />
+    <button> Send </button>
+    <span id="form-message">
+        Send to preview a response "<span id="form-value"></span>"
+    </span>
+</form>
+
+<script>
+    const $form = document.querySelector("#select-form-test");
+    const $message = document.querySelector("#form-message") as HTMLElement;
+    const $value = document.querySelector("#form-value") as HTMLElement;
+
+    $form?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget as HTMLFormElement);
+        const formValue = formData.get("countries");
+
+        if (typeof formValue === "string") {
+            $value.textContent = formValue; // Safe to assign as string
+        } else {
+            $value.textContent = ""; // Handle the case where it's a File or null
+        }
+
+        $message.classList.add("success");
+        // $message.textContent = "Your form has been sent successfully";
+    });
+</script>
+
+<style>
+    #select-form-test {
+        margin: auto;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    #select-form-test button {
+        padding: 8px 15px;
+        border-radius: 5px;
+        border: none;
+        color: white;
+        background-color: #007bff;
+        cursor: pointer;
+    }
+
+    #select-form-test button:hover {
+        background-color: #0067d4;
+    }
+
+    #form-message {
+        font-weight: bold;
+    }
+
+    #form-message.success {
+        color: limegreen;
+    }
+</style>
