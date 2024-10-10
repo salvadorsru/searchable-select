@@ -28,6 +28,14 @@ class SearchableSelect extends HTMLElement {
         observer.observe(this.$select, { childList: true })
     }
 
+    static get observedAttributes() {
+        return ["placeholder", "aria-label"];
+    }
+
+    attributeChangedCallback(name, _, newValue) {
+        this.$search.setAttribute(name, newValue);
+    }
+
     toggleResults() {
         this.$results.toggleAttribute('hidden')
     }
@@ -38,7 +46,6 @@ class SearchableSelect extends HTMLElement {
         $container.prepend(this.$search, this.$results)
         this.prepend($container)
     }
-
 
     updateHover($element) {
         const $prev = this.$results.querySelector('[data-hover]')
