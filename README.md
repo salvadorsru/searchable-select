@@ -29,10 +29,34 @@ import '@salvadorsru/searchable-select';
 
 ## Use example
 
+
+### Basic usage
+You can statically define all the elements as follows:
+
 ```html
 <searchable-select>
-    <input type="text" aria-label="Search countries" placeholder="Where are you from?">
-    <select name="countries" id="countries" hidden="hidden">
+    <input aria-label="Search countries" placeholder="Where are you from?">
+    <select name="countries" id="countries">
+        <option value="1">Argentina</option>
+        <option value="2">Brazil</option>
+        <option value="3">Canada</option>
+        <option value="4">France</option>
+        <option value="5">Germany</option>
+        <option value="6">Japan</option>
+    </select>
+</searchable-select>
+```
+### Dynamic input
+
+If the input does not exist, it will be generated automatically. 
+You can also modify the `aria-label` and the `placeholder` of the internal input directly from the custom element.
+
+```html
+<searchable-select 
+    aria-label="Search countries" 
+    placeholder="Where are you from?"
+>
+    <select name="countries" id="countries">
         <option value="1">Argentina</option>
         <option value="2">Brazil</option>
         <option value="3">Canada</option>
@@ -42,4 +66,33 @@ import '@salvadorsru/searchable-select';
     </select>
 </searchable-select>
 
+```
+
+### Important Considerations
+
+The default styles hide the select element above the input to allow the display of native form validation errors. If you want to show the regular select element as a fallback in case JavaScript is disabled, make sure to add the following code to your page:
+
+
+```html
+<noscript>
+    <style type="text/css">
+        :root {
+            --searchable-select-input-display: none;
+            --searchable-select-position: relative;
+            --searchable-select-pointer-events: auto;
+            --searchable-select-opacity: 1;
+        }
+    </style>
+</noscript>
+```
+
+## Custom Styles with CSS variables 
+
+```
+--searchable-select-border-color: // #ccc 
+--searchable-select-position: // absolute 
+--searchable-select-pointer-events: // none 
+--searchable-select-opacity: // 0 
+--searchable-select-background-color: // #fff 
+--sarchable-select-option-hover: // #f0f0f0 
 ```
