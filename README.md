@@ -94,5 +94,5 @@ The default styles hide the select element above the input to allow the display 
 --searchable-select-pointer-events: // none 
 --searchable-select-opacity: // 0 
 --searchable-select-background-color: // #fff 
---sarchable-select-option-hover: // #f0f0f0 
+--searchable-select-option-hover: // #f0f0f0 
 ```

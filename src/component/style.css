@@ -64,5 +64,5 @@ searchable-select searchable-select-container>:last-child>*[data-selected] {
 
 searchable-select searchable-select-container>:last-child>*[data-hover],
 searchable-select searchable-select-container>:last-child>*:hover {
-    background-color: var(--sarchable-select-option-hover, #f0f0f0)
+    background-color: var(--searchable-select-option-hover, #f0f0f0)
 }
