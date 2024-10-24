@@ -86,6 +86,7 @@ class SearchableSelect extends HTMLElement {
     renderResults(search = '') {
         const $options = Array.from(this.querySelectorAll('option'))
         const $result_list = []
+        let has_selected;
         let set_default_selected;
 
         for (const $o of $options) {
@@ -109,12 +110,13 @@ class SearchableSelect extends HTMLElement {
             if ($o.selected) {
                 $div.setAttribute('data-selected', '')
                 $div.setAttribute('data-hover', '')
+                has_selected = true;
             }
 
             $result_list.push($div)
         }
 
-        if (set_default_selected) {
+        if (set_default_selected || !has_selected) {
             $result_list[0]?.setAttribute('data-hover', '');
         }
 
