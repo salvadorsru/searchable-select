@@ -1,22 +1,23 @@
 class SearchableSelect extends HTMLElement {
+    $search = document.createElement('searchable-select-container')
+    $input = this.querySelector('input') ?? document.createElement('INPUT')
+    $select = this.querySelector('select')
+    $results = document.createElement('DIV')
+    options = []
+
     constructor() {
         super()
-        this.selectedMode = false
-        this.$search = this.querySelector('input') ?? document.createElement('INPUT')
-        this.$results = document.createElement('DIV')
-        this.$results.classList.add('results')
-        this.$results.hidden = true
-        this.$select = this.querySelector('select')
-        this.$selectedResult = undefined
+        this.observeOptions()
         this.render()
+        this.renderResults()
     }
 
-    render() {
-        this.setupSearch()
-        this.setDefault()
-        this.renderResults()
-        this.setEvents()
-        this.observeOptions()
+    static get observedAttributes() {
+        return ["placeholder", "aria-label"];
+    }
+
+    attributeChangedCallback(name, _, newValue) {
+        this.$input.setAttribute(name, newValue);
     }
 
     observeOptions() {
@@ -28,130 +29,102 @@ class SearchableSelect extends HTMLElement {
         observer.observe(this.$select, { childList: true })
     }
 
-    static get observedAttributes() {
-        return ["placeholder", "aria-label"];
+    render() {
+        this.setDefault()
+        this.buildSearch()
+        this.bootEvents()
     }
 
-    attributeChangedCallback(name, _, newValue) {
-        this.$search.setAttribute(name, newValue);
+    buildSearch() {
+        this.$search.appendChild(this.$input)
+        this.$results.classList.add('results')
+        this.$results.setAttribute('hidden', '')
+        this.$search.appendChild(this.$results)
+        this.prepend(this.$search)
     }
 
-    toggleResults() {
-        this.$results.toggleAttribute('hidden')
+    select($to_select) {
+        const $prev = this.$results.querySelector('[data-selected]')
+        $prev?.removeAttribute('data-selected')
+        $prev?.removeAttribute('data-hover')
+        $to_select.setAttribute('data-selected', '')
+        $to_select.setAttribute('data-hover', '')
+        this.$input.value = $to_select.textContent
+        const $prev_selected_option = this.querySelector(`option[selected]`)
+        $prev_selected_option?.removeAttribute('selected')
+        const $option = this.querySelector(`option[value='${$to_select.dataset.value}']`)
+        $option.setAttribute('selected', '')
+        this.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }))
     }
 
-    setupSearch() {
-        const $container = document.createElement('searchable-select-container')
-        $container.classList.add('container')
-        $container.prepend(this.$search, this.$results)
-        this.prepend($container)
-    }
 
-    updateHover($element) {
-        const $prev = this.$results.querySelector('[data-hover]')
-        if ($prev) {
-            $prev.removeAttribute('data-hover')
-        }
-        if ($element) $element.setAttribute('data-hover', '')
-    }
-
-    updateSelected(value) {
-        const $prev = this.$select.querySelector('option[selected]')
-        if ($prev)
-            $prev.removeAttribute('selected')
-        const $new = this.$select.querySelector(`option[value="${value}"]`)
-        $new.toggleAttribute('selected')
-    }
-
-    handleKeyoard(event) {
-        const $hovering = this.$results.querySelector('[data-hover]')
-
-        if (!$hovering) return
-
-        if (event.key === 'ArrowDown') {
-            event.preventDefault()
-            const $next = $hovering.nextElementSibling
-            if (!$next) return
-            this.updateHover($next)
-            $hovering.scrollIntoView()
-            return
-        }
-        if (event.key === 'ArrowUp') {
-            event.preventDefault()
-            const $prev = $hovering.previousElementSibling
-            if (!$prev) return
-            this.updateHover($prev)
-            $prev.scrollIntoView()
-            return
-        }
-        if (event.key === 'Enter') {
-            event.preventDefault()
-            $hovering.click()
-            return
-        }
-    }
-
-    setEvents() {
+    bootEvents() {
         this.$search.addEventListener('click', () => {
-            this.selectedMode = !this.selectedMode
+            this.$results.toggleAttribute('hidden')
+            this.$results.querySelector('[data-selected]')?.scrollIntoView()
+        })
 
-            if (this.selectedMode) {
-                this.$search.select()
-            } else {
-                this.$search.blur()
-                this.updateHover(this.$selectedResult)
-            }
-            this.$selectedResult?.scrollIntoView()
-            this.toggleResults()
+        this.$results.addEventListener('click', (event) => {
+            this.select(event.target)
         })
 
         const handleKeyboard = this.handleKeyoard.bind(this)
 
-        this.$search.addEventListener('focus', () => {
-            this.$search.addEventListener('keydown', handleKeyboard)
+        this.$input.addEventListener('input', ({ target: { value } }) => {
+            this.renderResults(value)
         })
 
-        this.$search.addEventListener('blur', () => {
-            this.$search.removeEventListener('keydown', handleKeyboard)
+        this.$input.addEventListener('focus', () => {
+            this.$input.addEventListener('keydown', handleKeyboard)
         })
 
-
-        this.$search.addEventListener('input', () => {
-            this.renderResults(this.$search.value)
+        this.$input.addEventListener('blur', () => {
+            this.$input.removeEventListener('keydown', handleKeyboard)
         })
-
-        this.$results.addEventListener('click', ({ target }) => {
-            this.selectedMode = false
-            this.$select.value = target.dataset.value
-            this.updateSelected(target.dataset.value)
-            this.setSearch(target.textContent)
-            this.toggleResults()
-            this.renderResults()
-        })
-    }
-
-    getOptions() {
-        return Array.from(this.querySelectorAll('option'))
     }
 
     renderResults(search = '') {
-        const $new_results = this.getResults(search)
+        const $options = Array.from(this.querySelectorAll('option'))
+        const $result_list = []
+        let set_default_selected;
 
-        this.$results.replaceChildren(...$new_results)
+        for (const $o of $options) {
+            if (search !== '') {
+                const is_ok = $o.textContent.toLowerCase().includes(search.trim().toLowerCase());
+                if (!is_ok) continue
+            }
 
-        const $to_hover = this.$results.querySelector('[data-selected]') ?? $new_results[0]
-        this.updateHover($to_hover)
+            if ($o.value === '') {
+                if ($o.selected) {
+                    set_default_selected = true
+                }
+                continue;
+            }
 
-    }
+            const $div = document.createElement('DIV')
+            $div.textContent = $o.textContent
+            $div.dataset.value = $o.value
+            $div.classList.add('result')
 
-    setSearch(value) {
-        this.$search.value = value.trim()
+            if ($o.selected) {
+                $div.setAttribute('data-selected', '')
+                $div.setAttribute('data-hover', '')
+            }
+
+            $result_list.push($div)
+        }
+
+        if (set_default_selected) {
+            $result_list[0]?.setAttribute('data-hover', '');
+        }
+
+        this.$results.replaceChildren(...$result_list)
     }
 
     setDefault() {
         const $default = this.querySelector('option[selected]')
         if ($default) {
-            this.setSearch($default.textContent)
+            this.$input.value = $default.textContent
         } else {
             const $blank = document.createElement('option')
             $blank.setAttribute('selected', '')
@@ -159,47 +132,39 @@ class SearchableSelect extends HTMLElement {
         }
     }
 
-    getResults(to_search = undefined) {
-        const
-            options = this.getOptions(),
-            results = []
-
-        for (const o of options) {
-            const content = o.textContent.trim()
-            const status = o.hasAttribute('selected')
-
-            if (!content) continue
-
-            const $result = this.createResult({
-                value: o.value, status, content
-            })
-
-            if (to_search) {
-                if (content.toLocaleLowerCase().trim().includes(to_search.toLocaleLowerCase().trim())) {
-                    results.push($result)
-                }
-            } else {
-                results.push($result)
-            }
-
-        }
-
-        return results
+    updateHover($element) {
+        const $prev = this.$results.querySelector('[data-hover]')
+        $prev?.removeAttribute('data-hover')
+        $element?.setAttribute('data-hover', '')
     }
 
+    handleKeyoard(event) {
 
-    createResult({ value, status, content }) {
-        const $result = document.createElement('DIV')
-        $result.className = 'result'
-        $result.dataset.value = value
-        if (status) {
-            $result.setAttribute('data-selected', '')
-            this.$selectedResult = $result
+        const $current_hover = this.$results.querySelector('[data-hover]')
+
+        if (!$current_hover) return
+
+        switch (event.key) {
+            case 'ArrowDown':
+                event.preventDefault()
+                const $next = $current_hover.nextElementSibling
+                if (!$next) return
+                this.updateHover($next)
+                $current_hover.scrollIntoView()
+                break;
+            case 'ArrowUp':
+                event.preventDefault()
+                const $prev = $current_hover.previousElementSibling
+                if (!$prev) return
+                this.updateHover($prev)
+                $prev.scrollIntoView()
+                break;
+            case 'Enter':
+                event.preventDefault()
+                $current_hover.click()
+                break;
         }
-        $result.textContent = content
-        return $result
     }
-
 }
 
 window.customElements.define('searchable-select', SearchableSelect)
