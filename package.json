@@ -1,11 +1,14 @@
 {
   "name": "@salvadorsru/searchable-select",
-  "version": "1.0.11",
+  "version": "1.1.0",
   "description": "A custom web component that transforms a standard <select> element into a searchable dropdown. It allows users to filter and search through options in real-time for improved usability. Easily custo…",
   "main": "dist/index.min.js",
   "style": "dist/style.min.css",
   "type": "module",
   "scripts": {
+    "dry:publish": "node ./src/build.js && npm pack --dry-run",
+    "publish": "node ./src/build.js && npm publish",
+    "dev": "node --watch-path=./src/component/index.js --watch-path=./src/component/style.css --watch ./src/build.js",
     "build": "node ./src/build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
